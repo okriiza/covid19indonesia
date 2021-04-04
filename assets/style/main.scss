@@ -1,0 +1,81 @@
+body {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+  // background-image: url("../image/bg3.jpg");
+  // background-size: cover;
+}
+
+//navbar
+.navbar {
+  .navbar-brand {
+    font-weight: 600;
+  }
+}
+// .bg-primary {
+//   background: linear-gradient(to right, #de6161, #2657eb);
+// }
+
+//header
+.description-covid {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding-top: 80px;
+  padding-bottom: 30px;
+  .covid-info {
+    margin-bottom: 50px;
+    //  margin-top: 50px;
+  }
+}
+
+.data-covid {
+  color: #fff;
+  margin-bottom: 50px;
+  h2 {
+    color: #000;
+    margin-top: 20px;
+    margin-bottom: 35px;
+  }
+  .card-positif {
+    border-radius: 20px;
+    background: linear-gradient(to right, #e52d27, #b31217);
+    margin-bottom: 10px;
+    .body-positif {
+      margin-left: 15px;
+    }
+    .fa-frown {
+      font-size: 80px;
+    }
+  }
+  .card-sembuh {
+    border-radius: 20px;
+    background: linear-gradient(to right, #1d976c, #11998e);
+    margin-bottom: 10px;
+    .body-sembuh {
+      margin-left: 15px;
+    }
+    .fa-smile-beam {
+      font-size: 80px;
+    }
+  }
+  .card-meninggal {
+    border-radius: 20px;
+    background: linear-gradient(to left, #1e3c72, #2a5298);
+    margin-bottom: 10px;
+    .body-meninggal {
+      margin-left: 15px;
+    }
+    .fa-sad-cry {
+      font-size: 80px;
+    }
+  }
+  p {
+    font-weight: 600;
+  }
+}
+.cegah-covid {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+.footer {
+  .fa-heart {
+    color: #cf000f;
+  }
+}

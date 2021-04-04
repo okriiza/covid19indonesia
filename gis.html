@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <!-- Required meta tags -->
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+   <link rel="stylesheet" href="assets/css/bootstrap.css" />
+   <link rel="stylesheet" href="assets/style/main.css" />
+   <link rel="stylesheet" href="assets/animasi/aos.css" />
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
+   <link rel="stylesheet" href="assets/fontawesome-free/css/all.css" />
+   <link rel="stylesheet" href="assets/leaflet/leaflet.css">
+
+   <title>Covid-19 Indonesia</title>
+</head>
+
+<body>
+   <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" data-aos="fade-down" data-aos-duration="1500">
+      <div class="container">
+         <a class="navbar-brand" href="index.php">COVID-19 Indonesia</a>
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ml-auto mr-3 text-uppercase font-weight-light">
+               <li class="nav-item active">
+                  <a class="nav-link" href="index.php"> Home</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="gis.html"> GIS COVID-19 PER-PROVINSI</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" data-toggle="modal" data-target="#exampleModal" href="#"> Contact</a>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </nav>
+
+
+   <!-- Button trigger modal -->
+
+ 
+ <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+         <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Contact</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+         </button>
+         </div>
+         <div class="modal-body">
+            <div class="container">
+               <div class="row align-self-center">
+                  <div class="col-md-6">
+                     <p>Rendi Okriza Putra</p>
+                     <small>rendiokrizaputra@gmail.com</small>
+                  </div>
+                  <div class="col-md-6">
+                     <p>Sarah Nur Alvian</p>
+                     <small>sarahalviah86@gmail.com</small>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div> -->
+      </div>
+   </div>
+</div>
+
+   <!-- <header class="description-covid">
+      <div class="container">
+         <div class="row d-flex align-items-center covid-info">
+            <div class="col-md-6" data-aos="fade-right" data-aos-duration="1500">
+               <div class="text-center">
+                  <h2>COVID-19 Indonesia</h2>
+                  <p class="lead">
+                     Karantina diri anda secara mandiri dengan cara #dirumahaja
+                  </p>
+               </div>
+            </div>
+            <div class="col-md-6" data-aos="fade-left" data-aos-duration="1500">
+               <img src="assets/image/doctor.png" class="img-fluid" width="600" height="450" />
+            </div>
+         </div>
+      </div>
+   </header> -->
+
+   <section class="gis-covid">
+      <div class="container">
+         <h3>Data Harian Kasus Penyebaran Per-Provinsi COVID-19 Indonesia</h3>
+         <hr>
+         <div class="row">
+            <div class="col-md-3" style="width: 100%">
+               <ul class="list-group list-covid">
+
+               </ul>
+            </div>
+            <div class="col-md-9">
+               <div id="map"></div>
+            </div>
+         </div>
+      </div>
+   </section>
+
+   <footer class="footer">
+      <div class=" container-fluid">
+         <div class="row border-top justify-content-center align-items-center pt-4 pb-4">
+            <div class="col-auto text-grey-500 font-weight-light">
+               ©2020 <b class="font-weight-bold">Covid-19 Indonesia</b> - Made With <i class="fas fa-heart"></i> In Bandung
+            </div>
+         </div>
+      </div>
+   </footer>
+
+
+   <script src="assets/jquery/jquery-3.4.1.min.js"></script>
+   <script src="assets/js/popper.min.js"></script>
+   <script src="assets/js/bootstrap.min.js"></script>
+   <script src="assets/animasi/aos.js"></script>
+   <script src="assets/leaflet/leaflet.js"></script>
+   <script>
+      AOS.init();
+   </script>
+   <script type="text/javascript">
+      var map= L.map("map").setView([-3.824181, 117.8191513],5);
+      var api='https://services5.arcgis.com/VS6HdKS0VfIhv8Ct/arcgis/rest/services/COVID19_Indonesia_per_Provinsi/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json';
+      var dataCovid=[];
+      var geojson=[];
+      // map.attributionControl.addAttribution('Modifed by &copy; <a href="https://www.okriiza.com">Rendi Okriza Putra</a>');
+      getData();
+      $(document).on("click",".list-covid .list-group-item",function(){
+         var id=$(this).data("id");
+         var set=geojson[id];
+         set.eachLayer(function(feature){
+            feature.openPopup();
+            map.fitBounds(feature.getBounds());
+         });
+      });
+    function getColor(positif){
+       color="#0d0";
+       if(positif>1000){
+          color="#222";
+       }
+       else if(positif>500){
+          color="#555";
+       }
+       else if(positif>200){
+          color="#f00";
+       }
+       else if(positif>100){
+          color="#f90";
+       }
+       else if(positif>50){
+          color="#09d";
+       }
+       else if(positif>20){
+          color="#090";
+       }
+       return color;
+    }
+    // atur style
+    function style(f) {
+       var KODE=f.properties.KODE;
+       data = dataCovid[KODE];
+       // console.log(data);
+       return {
+          weight: 1,
+          opacity: 1,
+          color: 'white',
+          dashArray: '3',
+          fillOpacity: 0.7,
+          fillColor: getColor(data.Kasus_Posi)
+       };
+    }
+    // update jika hover
+    function highlightFeature(e) {
+       var layer = e.target;
+    
+       layer.setStyle({
+          weight: 1,
+          color: '#f00',
+          dashArray: '',
+          fillOpacity: 0.7
+       });
+    
+       if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+          layer.bringToFront();
+       }
+    
+    }
+    // update info
+       function resetHighlight(e) {
+          var layer = e.target;
+          layer.setStyle({
+             weight: 1,
+             opacity: 1,
+             color: 'white',
+             dashArray: '3',
+             fillOpacity: 0.7,
+          })
+       }
+    
+      function onEachFeature(f, layer) {
+          layer.on({
+             mouseover: highlightFeature,
+             mouseout: resetHighlight
+          });
+          var KODE=f.properties.KODE;
+          console.log(data);
+          data = dataCovid[KODE];
+          var popUp='<table>'+
+                   '<tr>'+
+                      '<td colspan="4"><h6>'+data.Provinsi+'</h6></td>'+
+                   '</tr>'+
+                   '<tr>'+
+                      '<td class="bg-primary" width="20">&nbsp;</td>'+
+                      '<td>Positif</td>'+
+                      '<td>'+data.Kasus_Posi+'</td>'+
+                   '</tr>'+
+                   '<tr>'+
+                      '<td class="bg-success"></td>'+
+                      '<td>Sembuh</td>'+
+                      '<td>'+data.Kasus_Semb+'</td>'+
+                   '</tr>'+
+                   '<tr>'+
+                      '<td class="bg-danger"></td>'+
+                      '<td>Meninggal Dunia</td>'+
+                      '<td>'+data.Kasus_Meni+'</td>'+
+                   '</tr>'+
+                   '</table>';
+          layer.bindPopup(popUp);
+    
+     }
+    
+    var legend = L.control({position: 'bottomright'});
+    
+       legend.onAdd = function (map) {
+          var div = L.DomUtil.create('div', 'info legend'),
+             grades = [0, 20, 50, 100, 200, 500],
+             labels = [],
+             from, to;
+    
+          for (var i = 0; i < grades.length; i++) {
+             from = grades[i];
+             to = grades[i + 1];
+    
+             labels.push(
+                '<i style="background:' + getColor(from + 1) + '"></i> ' +
+                from + (to ? '&ndash;' + to : '+'));
+          }
+    
+          div.innerHTML = labels.join('<br>');
+          return div;
+       };
+    
+       legend.addTo(map);
+      
+      function getData(){
+         $.ajax({
+            url:api,
+            dataType:'JSON',
+            success:function(data){
+               console.log(data)
+               var features=data.features;
+               for (i=0;i<features.length;i++) {
+                  var attributes=features[i].attributes;
+                  var Kode_Provi=attributes.Kode_Provi;
+                  dataCovid[Kode_Provi]=attributes;
+                  // console.log(attributes);
+                var list='<h5>'+attributes.Provinsi+'</h5>'+
+                         '<span class="text-primary">Positif : '+attributes.Kasus_Posi+'</span>- '+
+                         '<span class="text-success">Sembuh : '+attributes.Kasus_Semb+'</span> -'+
+                         '<span class="text-danger">Meninggal Dunia: '+attributes.Kasus_Meni+'</span>';
+                $(".list-covid").append('<li class="list-group-item" data-id="'+Kode_Provi+'">'+list+'</li>');
+               }
+               for (i=0;i<features.length;i++) {
+                  var attributes=features[i].attributes;
+                  var Kode_Provi=attributes.Kode_Provi;
+                  if(Kode_Provi!=0){
+                     $.getJSON("assets/geojson/"+Kode_Provi+".geojson",function(data){
+                        var KODE=data.features[0].properties.KODE;
+                        geojson[KODE]=L.geoJSON(data,{
+                           onEachFeature:onEachFeature,
+                         style: style, 
+                        }).addTo(map);
+    
+                     });
+                  }
+               }
+            }
+         });
+      }
+    
+    </script>
+</body>
+
+</html>
